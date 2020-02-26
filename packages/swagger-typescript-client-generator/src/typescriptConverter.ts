@@ -190,9 +190,15 @@ export class TypescriptConverter implements BaseConverter {
   }
 
   public generateType(name: string, definition: Schema): string {
-    return `export type ${this.getNormalizer().normalize(
-      name
-    )} = ${this.generateTypeValue(definition)}\n`
+    if (Array.isArray(definition.enum)) {
+      return `export enum ${this.getNormalizer().normalize(
+        name
+      )} ${this.generateTypeValue(definition)}\n`
+    } else {
+      return `export type ${this.getNormalizer().normalize(
+        name
+      )} = ${this.generateTypeValue(definition)}\n`
+    }
   }
 
   public generateTypeValue(definition: Schema & { schema?: Schema }): string {
@@ -214,13 +220,17 @@ export class TypescriptConverter implements BaseConverter {
       )
     }
 
-	if(Array.isArray(definition.enum)){
-		definition.type = DEFINITION_TYPE_ENUM
-	}
-	
+    if (Array.isArray(definition.enum)) {
+      definition.type = DEFINITION_TYPE_ENUM
+    }
+
     switch (definition.type) {
       case DEFINITION_TYPE_ENUM: {
-        return definition.enum.join(" | ")
+        let output = ""
+        output += "{\n"
+        output += definition.enum.join(",\n")
+        output += "\n}"
+        return output
       }
       case DEFINITION_TYPE_STRING:
       case DEFINITION_TYPE_NUMBER:

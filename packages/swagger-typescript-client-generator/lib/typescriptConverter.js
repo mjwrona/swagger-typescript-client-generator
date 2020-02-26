@@ -101,7 +101,12 @@ var TypescriptConverter = /** @class */ (function () {
         return output;
     };
     TypescriptConverter.prototype.generateType = function (name, definition) {
-        return "export type " + this.getNormalizer().normalize(name) + " = " + this.generateTypeValue(definition) + "\n";
+        if (Array.isArray(definition.enum)) {
+            return "export enum " + this.getNormalizer().normalize(name) + " " + this.generateTypeValue(definition) + "\n";
+        }
+        else {
+            return "export type " + this.getNormalizer().normalize(name) + " = " + this.generateTypeValue(definition) + "\n";
+        }
     };
     TypescriptConverter.prototype.generateTypeValue = function (definition) {
         var _this = this;
@@ -116,9 +121,16 @@ var TypescriptConverter = /** @class */ (function () {
                 .map(function (schema) { return _this.generateTypeValue(schema); })
                 .join(" & ") || exports.TYPESCRIPT_TYPE_VOID);
         }
+        if (Array.isArray(definition.enum)) {
+            definition.type = swaggerTypes_1.DEFINITION_TYPE_ENUM;
+        }
         switch (definition.type) {
             case swaggerTypes_1.DEFINITION_TYPE_ENUM: {
-                return definition.enum.join(" | ");
+                var output = "";
+                output += "{\n";
+                output += definition.enum.join(",\n");
+                output += "\n}";
+                return output;
             }
             case swaggerTypes_1.DEFINITION_TYPE_STRING:
             case swaggerTypes_1.DEFINITION_TYPE_NUMBER:
