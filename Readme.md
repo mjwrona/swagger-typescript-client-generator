@@ -5,7 +5,7 @@ Generate typescript client/models from swagger.json file
 ## install
 
 ```
-npm install --global swagger-typescript-client-generator
+npm install --global @mjwrona/swagger-typescript-client-generator
 ```
 
 ## generate separate files for models and client
