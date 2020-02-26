@@ -214,6 +214,10 @@ export class TypescriptConverter implements BaseConverter {
       )
     }
 
+	if(Array.isArray(definition.enum)){
+		definition.type = DEFINITION_TYPE_ENUM
+	}
+	
     switch (definition.type) {
       case DEFINITION_TYPE_ENUM: {
         return definition.enum.join(" | ")
