@@ -1,5 +1,6 @@
 {
   "name": "swagger-typescript-client-generator",
+  "version": "1",
   "private": true,
   "scripts": {
     "build": "lerna exec --stream -- yarn build",
